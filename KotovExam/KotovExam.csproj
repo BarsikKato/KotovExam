@@ -91,7 +91,7 @@
     <Content Include="Диаграммы\Диаграмма потоков данных.jpg" />
     <Content Include="Диаграммы\Диаграмма развертывания.jpg" />
     <Content Include="Диаграммы\Диаграмма состояний.jpg" />
-    <Content Include="Диаграммы\Решение. Критический путь.jpg" />
+    <Content Include="Решение. Критический путь.jpg" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
