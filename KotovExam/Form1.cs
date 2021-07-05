@@ -54,11 +54,11 @@ namespace KotovExam
                 if ((myStream = saveFileDialog.OpenFile()) != null)
                 {
                     myStream.Close();
-                    string path = saveFileDialog.FileName;
-                    if (path != null && path != "")
+                    string savePath = saveFileDialog.FileName;
+                    if (savePath != null && savePath != "")
                     {
-                        //CriticalPath cp = new CriticalPath(dataPath, path);
-                        //cp.CalculateCriticalPath();
+                        CriticalPath cp = new CriticalPath(readPath, savePath);
+                        cp.CalculateCriticalPath();
                         MessageBox.Show("Решение сохранено!");
                         Environment.Exit(0);
                     }
