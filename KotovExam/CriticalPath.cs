@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
 
 namespace KotovExam
 {
@@ -13,12 +14,12 @@ namespace KotovExam
         string readPath;
         string savePath;
 
-        struct Activity
+        struct Activity //Структура работ (дуг)
         {
             public string eventStart, eventEnd;
             public int time;
         }
-        struct Path
+        struct Path //Структура путей
         {
             public string path, lastPoint;
             public int length;
@@ -53,11 +54,14 @@ namespace KotovExam
                 {
                     string[] str = line.Split(';');
                     activities.Add(new Activity { eventStart = str[0], eventEnd = str[1], time = Convert.ToInt32(str[2]) });
+                    Debug.WriteLine("Считывание строки {0} успешно произведено.", activities.Count);
                 }
+                Debug.WriteLine("Файл по пути успешно считан.", readPath);
             }
             catch
             {
                 MessageBox.Show("Неверный формат записи данных!");
+                Debug.WriteLine("Не удалось считать файл по пути {0}.", readPath);
                 Environment.Exit(0);
             }
         }
@@ -73,24 +77,25 @@ namespace KotovExam
             {
                 using (StreamWriter sw = new StreamWriter(savePath, false, UnicodeEncoding.UTF8))
                 {
-                    if (savingPath.Count == 1)
+                    if (savingPath.Count == 1) //Для записи одного пути
                     {
                         sw.WriteLine("Найденный критический путь имеет вид:");
                         sw.WriteLine(savingPath[0].path);
                         sw.WriteLine("Его длина составляет: " + savingPath[0].length);
                     }
-                    else
+                    else //Для записи нескольких путей
                     {
                         sw.WriteLine("Найденные критические пути имеют вид:");
                         foreach (Path savPath in savingPath)
                             sw.WriteLine(savPath.path);
                         sw.WriteLine("Длина каждого из них составляет: " + savingPath[0].length);
                     }
+                    Debug.WriteLine("Файл успешно записан по пути.", savePath);
                 }
-                Console.WriteLine("Решение записано в файл {0}.", savePath);
             }
             catch
             {
+                Debug.WriteLine("Не удалось записать файл по пути.", savePath);
                 MessageBox.Show("Не удалось записать данные в файл!");
                 Environment.Exit(0);
             }
@@ -110,19 +115,20 @@ namespace KotovExam
                 {
                     tempStartPos = activity.eventStart;
                     countCheck++;
-                    if (countCheck > 1 && lastPoint != activity.eventStart)
+                    if (countCheck > 1 && lastPoint != activity.eventStart) //Проверка на несколько начальных точек.
                     {
-                        MessageBox.Show("В введенных данных присутствует несколько начальных точек отсутствует. Решение невозможно.");
+                        MessageBox.Show("В введенных данных присутствует несколько начальных точек. Решение невозможно.");
                         Environment.Exit(0);
                     }
                     lastPoint = activity.eventStart;
                 }
             }
-            if (countCheck == 0)
+            if (countCheck == 0) //Проверка на отсутствие начальной точки.
             {
                 MessageBox.Show("Начальная точка отсутствует.");
                 Environment.Exit(0);
             }
+            Debug.WriteLine("Стартовая позиция найдена в точке " + tempStartPos);
             return tempStartPos;
         }
 
@@ -140,19 +146,20 @@ namespace KotovExam
                 {
                     tempEndPos = activity.eventEnd;
                     countCheck++;
-                    if (countCheck > 1 && lastPoint != activity.eventEnd)
+                    if (countCheck > 1 && lastPoint != activity.eventEnd) //Проверка на несколько конечных точек.
                     {
-                        MessageBox.Show("В введенных данных присутствует несколько конечных точек отсутствует. Решение невозможно.");
+                        MessageBox.Show("В введенных данных присутствует несколько конечных точек. Решение невозможно.");
                         Environment.Exit(0);
                     }
                     lastPoint = activity.eventEnd;
                 }
             }
-            if (countCheck == 0)
+            if (countCheck == 0) //Проверка на отсутствие конечной точки.
             {
                 MessageBox.Show("Конечная точка отсутствует.");
                 Environment.Exit(0);
             }
+            Debug.WriteLine("Конечная позиция найдена в точке " + tempEndPos);
             return tempEndPos;
         }
 
@@ -164,6 +171,7 @@ namespace KotovExam
             foreach (Activity activity in activities.Where(x => x.eventStart == FindStartingPos())) //Сначала в список путей заносятся все начальные дуги
             {
                 pathes.Add(new Path { path = activity.eventStart + "--" + activity.eventEnd, lastPoint = activity.eventEnd, length = activity.time });
+                Debug.WriteLine("Промежуточный путь записан: " + pathes[pathes.Count - 1].path);
             }
             for (int i = 0; i < pathes.Count; i++) //Затем программа начинает обход по всем записанным путям (в ходе выполнения цикла их количество пополняется)
             {
@@ -171,6 +179,7 @@ namespace KotovExam
                 {
                     //Таким образом в список заносятся все промежуточные пути, зато работает
                     pathes.Add(new Path { path = pathes[i].path + "--" + activity.eventEnd, lastPoint = activity.eventEnd, length = pathes[i].length + activity.time });
+                    Debug.WriteLine("Промежуточный путь записан: " + pathes[pathes.Count - 1].path);
                 }
             }
         }
@@ -185,11 +194,14 @@ namespace KotovExam
             string endPos = FindEndingPos();
             foreach (Path path in pathes.Where(x => x.lastPoint == endPos)) //Проверяет все пути, конечная точка которых совпадает с концом сети
             {
+                Debug.WriteLine("Текущая длина пути {0}, текущая максимальная длина {1}", path.length, maxLength);
                 if (path.length > maxLength) maxLength = path.length; //Вычисляет самый длинный путь из представленных
             }
+            Debug.WriteLine("Найденная максимальная длина равна {0}.", maxLength);
             List<Path> criticalPath = new List<Path>();
-            foreach (Path path in pathes.Where(x => x.length == maxLength && x.lastPoint == endPos))
+            foreach (Path path in pathes.Where(x => x.length == maxLength && x.lastPoint == endPos)) //Заносит в массив критические пути.
             {
+                Debug.WriteLine("Путь записан в список критических.", path.path);
                 criticalPath.Add(path);
             }
             return criticalPath;
@@ -200,6 +212,8 @@ namespace KotovExam
         /// </summary>
         public void CalculateCriticalPath()
         {
+            Debug.Listeners.Add(new TextWriterTraceListener(File.Create("log.txt")));
+            Debug.AutoFlush = true;
             ReadData();
             CalculatePathes();
             var criticalPath = FindCriticalPath();
