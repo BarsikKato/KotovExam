@@ -83,7 +83,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Решение. Критический путь.jpg" />
+    <Content Include="Диаграммы\Диаграмма вариантов использования.jpg" />
+    <Content Include="Диаграммы\Диаграмма деятельности.jpg" />
+    <Content Include="Диаграммы\Диаграмма классов.jpg" />
+    <Content Include="Диаграммы\Диаграмма компонентов.jpg" />
+    <Content Include="Диаграммы\Диаграмма последовательностей.jpg" />
+    <Content Include="Диаграммы\Диаграмма потоков данных.jpg" />
+    <Content Include="Диаграммы\Диаграмма развертывания.jpg" />
+    <Content Include="Диаграммы\Диаграмма состояний.jpg" />
+    <Content Include="Диаграммы\Решение. Критический путь.jpg" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -9,17 +9,17 @@ using System.Diagnostics;
 
 namespace KotovExam
 {
-    class CriticalPath
+    public class CriticalPath
     {
         string readPath;
         string savePath;
 
-        struct Activity //Структура работ (дуг)
+        public struct Activity //Структура работ (дуг)
         {
             public string eventStart, eventEnd;
             public int time;
         }
-        struct Path //Структура путей
+        public struct Path //Структура путей
         {
             public string path, lastPoint;
             public int length;
@@ -34,13 +34,13 @@ namespace KotovExam
             this.savePath = savePath;
         }
 
-        List<Activity> activities = new List<Activity>(); //Список всех работ (в графике это дуги)
-        List<Path> pathes = new List<Path>(); //Список всех путей
+        public List<Activity> activities = new List<Activity>(); //Список всех работ (в графике это дуги)
+        public List<Path> pathes = new List<Path>(); //Список всех путей
 
         /// <summary>
         /// Метод считывания данных из файла.
         /// </summary>
-        void ReadData()
+        public void ReadData()
         {
             if (!File.Exists(readPath))
             {
@@ -70,7 +70,7 @@ namespace KotovExam
         /// Метод записи в файл.
         /// </summary>
         /// <param name="savingPath"></param>
-        void WriteToFile(List<Path> savingPath)
+        public void WriteToFile(List<Path> savingPath)
         {
             if (!File.Exists(savePath)) File.Create(savePath).Close();
             try
@@ -105,7 +105,7 @@ namespace KotovExam
         /// Метод поиска стартовой точки.
         /// </summary>
         /// <returns></returns>
-        string FindStartingPos() //Метод для поиска начальной точки
+        public string FindStartingPos() //Метод для поиска начальной точки
         {
             string tempStartPos = " ", lastPoint = "";
             int countCheck = 0;
@@ -136,7 +136,7 @@ namespace KotovExam
         /// Метод поиска конечной точки.
         /// </summary>
         /// <returns></returns>
-        string FindEndingPos() //Метод для поиска конечной точки
+        public string FindEndingPos() //Метод для поиска конечной точки
         {
             string tempEndPos = "", lastPoint = "";
             int countCheck = 0;
@@ -166,7 +166,7 @@ namespace KotovExam
         /// <summary>
         /// Метод подсчета путей.
         /// </summary>
-        void CalculatePathes() //Метод подсчета путей
+        public void CalculatePathes() //Метод подсчета путей
         {
             foreach (Activity activity in activities.Where(x => x.eventStart == FindStartingPos())) //Сначала в список путей заносятся все начальные дуги
             {
@@ -188,7 +188,7 @@ namespace KotovExam
         /// Метод поиска критического пути.
         /// </summary>
         /// <returns></returns>
-        List<Path> FindCriticalPath() //Метод поиска критического пути
+        public List<Path> FindCriticalPath() //Метод поиска критического пути
         {
             int maxLength = 0;
             string endPos = FindEndingPos();
